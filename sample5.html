@@ -1,0 +1,1541 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Food Calorie Counter</title>
+</head>
+<body>
+    <h1>Food Calorie Counter</h1>
+    <p>Enter a food name to see details:</p>
+    <input type="text" id="foodInput" oninput="showFoodDetails()" placeholder="Type a food name...">
+    
+    <div id="foodDetails"></div>
+
+    <script>
+        function showFoodDetails() {
+            var input = document.getElementById('foodInput').value.toLowerCase();
+            var details = document.getElementById('foodDetails');
+            
+            // Clear previous details
+            details.innerHTML = '';
+
+            // Example list of food items and their details
+            var foods = {
+                'apple': {
+                    'calories': '52 kcal per 100g',
+                    'benefits': 'Rich in dietary fiber and vitamin C.',
+                    'disadvantages': 'May cause allergic reactions in some people.',
+                    'nutrients': 'Vitamins b, C, B6, potassium, fiber, manganese'
+                },
+                'banana': {
+                    'calories': '89 kcal per 100g',
+                    'benefits': 'High in potassium and vitamin B6.',
+                    'disadvantages': 'High sugar content.',
+                    'nutrients':'Vitamins f, C, B6, potassium, fiber, manganese'
+                },
+                'acornsquash':{
+                    'calories':'115 kcal per 100g',
+                    'benefits': 'High in vitamins A and C, potassium, and dietary fiber. Supports vision, immune function, and digestive health',
+                    'disadvantages': 'Can be high in carbs if consumed in large quantities, so watch portion sizes if you re monitoring carbohydrate intake',
+                    'nutrients':'Vitamins g, C, B6, potassium, fiber, manganese'
+                },
+                 'almond': {
+                   'calories': '160 kcal per ounce (28 grams)',
+                   'benefits': 'Rich in healthy fats, protein, vitamin E, magnesium, and fiber. Good for heart health and weight management.',
+                   'disadvantages': 'High in calories and fats, so portion control is important. May cause allergic reactions in some people.',
+                   'nutrients': 'Protein, healthy fats, vitamin E, magnesium, fiber, calcium'
+                },
+                'ahituna': {
+                   'calories': '180 kcal per 3-ounce serving (cooked)',
+                   'benefits': 'High in protein, low in fat, and an excellent source of omega-3 fatty acids and B vitamins. Good for muscle maintenance and cardiovascular health.',
+                   'disadvantages': 'Can contain mercury, so moderation is advised, especially for pregnant women.',
+                   'nutrients': 'Protein, omega-3 fatty acids, B vitamins (B12, B6), selenium, niacin'
+                },
+                'albacoretuna': {
+                   'calories': '200 kcal per 3-ounce serving (cooked)',
+                   'benefits': 'Similar to Ahi Tuna with high protein content and omega-3 fatty acids. Supports heart health and muscle function.',
+                   'disadvantages': 'Also has mercury concerns. Pregnant women should limit intake.',
+                   'nutrients': 'Protein, omega-3 fatty acids, vitamin D, B vitamins, selenium'
+                },
+                'alfalfa': {
+                   'calories': '8 kcal per cup (raw)',
+                   'benefits': 'Low in calories, high in vitamins A, C, E, and K. Contains antioxidants and is beneficial for digestion and overall health.',
+                   'disadvantages': 'Can interact with certain medications and may cause allergic reactions in some people.',
+                   'nutrients': 'Vitamins A, C, E, K, protein, fiber, calcium'
+                },
+                'antelope': {
+                   'calories': '120-150 kcal per 3-ounce serving (cooked)',
+                   'benefits': 'Lean meat, high in protein, low in fat, and rich in iron and B vitamins. Good for muscle development and overall nutrition.',
+                   'disadvantages': 'Can be tough and may require specific cooking methods.',
+                   'nutrients': 'Protein, iron, B vitamins (especially B12), zinc'
+                },
+                'applejuice': {
+                    'calories': '114 kcal per 8-ounce serving',
+                    'benefits': 'Provides vitamin C and some antioxidants. Can be hydrating and refreshing.',
+                    'disadvantages': 'High in sugar and lacks the fiber found in whole apples. Excessive consumption can lead to weight gain and blood sugar spikes.',
+                    'nutrients': 'Vitamin C, some potassium, various antioxidants (though less than whole apples)'
+                },
+                'applesauce': {
+                    'calories': '100 kcal per cup (unsweetened)',
+                    'benefits': 'Provides some fiber and vitamin C. Can be a good alternative to sugary snacks.',
+                    'disadvantages': 'Even unsweetened versions can be high in natural sugars. May have fewer nutrients compared to whole apples.',
+                    'nutrients': 'Vitamin C, some fiber (depending on processing)'
+                },
+                'artichoke': {
+                    'calories': '60 kcal per medium artichoke',
+                    'benefits': 'High in fiber, vitamins C and K, and antioxidants. Supports digestive health and liver function.',
+                    'disadvantages': 'Can be a bit labor-intensive to prepare. Some people might find them challenging to eat.',
+                    'nutrients': 'Fiber, vitamins C, K, folate, magnesium, potassium'
+                },
+                'arugula': {
+                    'calories': '25 kcal per cup (raw)',
+                    'benefits': 'Low in calories but high in vitamins A, C, and K. Contains antioxidants and supports overall health.',
+                    'disadvantages': 'Has a peppery taste that might not be appealing to everyone.',
+                    'nutrients': 'Vitamins A, C, K, folate, calcium, iron'
+                },
+                'asiannoodles': {
+                    'calories': '200 kcal per cup (cooked, varies widely based on type and preparation)',
+                    'benefits': 'Can be a good source of carbohydrates and energy. Often combined with vegetables and proteins in dishes.',
+                    'disadvantages': 'Can be high in sodium and refined carbs depending on the preparation. May lack essential nutrients if not balanced with other ingredients.',
+                    'nutrients': 'Carbohydrates, sometimes fortified with vitamins and minerals depending on the brand'
+                },
+                'asparagus': {
+                    'calories': '20 kcal per cup (cooked)',
+                    'benefits': 'Low in calories and high in fiber, vitamins A, C, E, and K. Supports digestive health and has anti-inflammatory properties.',
+                    'disadvantages': 'Can cause digestive discomfort in some people if consumed in large quantities.',
+                    'nutrients': 'Fiber, vitamins A, C, E, K, folate, iron'
+                },
+                'avocado': {
+                    'calories': '240 kcal per avocado (medium)',
+                    'benefits': 'Rich in healthy fats, fiber, vitamins E, C, and B6. Supports heart health, skin health, and digestive function.',
+                    'disadvantages': 'High in calories and fat, so portion control is key. Can be expensive depending on the region.',
+                    'nutrients': 'Healthy fats, fiber, vitamins E, C, B6, potassium, magnesium'
+                },
+                'avocadoroll': {
+                    'calories': '140-200 kcal per roll (depends on size and ingredients)',
+                    'benefits': 'Provides healthy fats from avocado and can be a good source of nutrients if made with fresh ingredients.',
+                    'disadvantages': 'Can be high in sodium and calories, especially if served with sauces or fried components.',
+                    'nutrients': 'Healthy fats from avocado, possibly some fiber, and a variety of vitamins depending on additional ingredients'
+                },
+                'babaganoush': {
+                    'calories': '78 kcal per 100g',
+                    'benefits': 'Rich in fiber, vitamins B and C, potassium, and antioxidants.Supports heart health and digestion.',
+                    'disadvantages': 'May contain high amounts of fat and calories if prepared with a lot of olive oil or tahini.',
+                    'nutrients': 'Fiber, vitamins B1, B6, C, potassium, folate, antioxidants'
+                },
+                'bacon': {
+                    'calories': '42 kcal per slice (8g)',
+                    'benefits': 'high in protein and certain B vitamins. Can add flavor to dishes.',
+                    'disadvantages': 'High in saturated fat, cholesterol, and sodium. Associated with increased risk of heart disease and cancer if consumed excessively.',
+                    'nutrients': 'Protein, saturated fat, sodium, B vitamins (especially B12), selenium'
+                },
+                'bagels': {
+                    'calories': '245 kcal per medium bagel (100g)',
+                    'benefits': 'good source of carbohydrates and energy. Often fortified with vitamins and minerals.',
+                    'disadvantages': 'Can be high in refined carbs and calories. May cause blood sugar spikes.',
+                    'nutrients': 'Carbohydrates, protein, small amounts of fiber, B vitamins (if fortified)'
+                },
+                'bakedbeans': {
+                    'calories': '140 kcal per half-cup serving (130g)',
+                    'benefits': 'High in fiber and protein. Contains iron, calcium, and some vitamins. Good for digestive health and provides plant-based protein.',
+                    'disadvantages': 'Can be high in sugar and sodium, especially canned versions.',
+                    'nutrients': 'Fiber, protein, iron, calcium, magnesium, folate'
+                },
+                'barley': {
+                    'calories': '354 kcal per 100g (raw)',
+                    'benefits': 'High in fiber, vitamins, and minerals. Supports heart health, digestive health, and helps regulate blood sugar levels.',
+                    'disadvantages': 'Contains gluten, so not suitable for people with celiac disease or gluten sensitivity.',
+                    'nutrients': 'Fiber, B vitamins, magnesium, selenium, iron, zinc'
+                },
+                'bbq':{
+                    'calories': 'Varies widely based on type and preparation method; around 400-500 kcal per serving for ribs',
+                    'benefits': 'Can be a good source of protein and B vitamins, depending on the meat used.',
+                    'disadvantages': 'Often high in fat, sodium, and sugar (from sauces). Risk of consuming harmful compounds if meat is charred.',
+                    'nutrients': 'Protein, B vitamins, fat, sodium, iron (varies by type of meat and preparation)'
+                },
+                'beer': {
+                    'calories': '150 kcal per 12-ounce serving',
+                    'benefits': 'Can contain some antioxidants and B vitamins. Moderate consumption may have certain heart health benefits.',
+                    'disadvantages': 'High in calories and carbohydrates. Excessive consumption can lead to weight gain and other health issues.',
+                    'nutrients': 'Carbohydrates, small amounts of B vitamins, alcohol'
+                },
+                'bellpeppers': {
+                    'calories': '31 kcal per 100g',
+                    'benefits': 'High in vitamins A and C, antioxidants, and fiber. Supports immune function and eye health.',
+                    'disadvantages': 'Generally safe, but some people may experience digestive discomfort if consumed in large quantities.',
+                    'nutrients': 'Vitamins A, C, B6, fiber, potassium, folate'
+                },
+                'bison': {
+                    'calories': '143 kcal per 100g (cooked)',
+                    'benefits': 'Lean meat high in protein, iron, and B vitamins. Lower in fat compared to beef. Supports muscle development and energy levels.',
+                    'disadvantages': 'Can be expensive. Should be consumed in moderation due to cholesterol content.',
+                    'nutrients': 'Protein, iron, B vitamins (especially B12), zinc, selenium'
+                },
+                'bisque': {
+                    'calories': 'Varies widely depending on the type and ingredients; around 200-300 kcal per cup for lobster bisque',
+                    'benefits': 'Often rich and flavorful, containing protein from seafood and dairy. Provides vitamins and minerals.',
+                    'disadvantages': 'Can be high in fat, especially saturated fat, and sodium. Often contains heavy cream.',
+                    'nutrients': 'Protein, fat, B vitamins, minerals (such as calcium, phosphorus, and sodium)'
+                },
+                'blackbeans': {
+                    'calories': '114 kcal per half-cup serving (86g, cooked)',
+                    'benefits': 'High in fiber, protein, and a good source of iron, magnesium, and folate. Supports digestive health and provides plant-based protein.',
+                    'disadvantages': 'Can cause digestive discomfort or gas in some people.',
+                    'nutrients': 'Fiber, protein, iron, magnesium, folate, potassium'
+                },
+                'bluefish': {
+                    'calories': '191 kcal per 100g (cooked)',
+                    'benefits': 'High in protein and omega-3 fatty acids. Good for heart health and reducing inflammation.',
+                    'disadvantages': 'Can contain high levels of mercury. Should be consumed in moderation.',
+                    'nutrients': 'Protein, omega-3 fatty acids, vitamin D, B vitamins, selenium'
+                },
+                'bread': {
+                    'calories': '265 kcal per 100g (depends on type)',
+                    'benefits': 'Provides carbohydrates for energy, and can be a source of fiber if whole grain. Often fortified with vitamins and minerals.',
+                    'disadvantages': 'Can be high in refined carbs and low in nutrients if made from white flour. May cause blood sugar spikes.',
+                    'nutrients': 'Carbohydrates, protein, fiber (if whole grain), B vitamins, iron (varies by type)'
+                },
+                'broccoli': {
+                    'calories': '55 kcal per cup (cooked)',
+                    'benefits': 'High in fiber, vitamins C and K, and antioxidants. Supports immune function, bone health, and has anti-inflammatory properties.',
+                    'disadvantages': 'Can cause gas or bloating in some people due to its fiber content.',
+                    'nutrients': 'Fiber, vitamins C, K, A, folate, calcium, potassium'
+                },
+                'bruschetta': {
+                    'calories': 'Varies widely based on ingredients; typically around 150-200 kcal per serving',
+                    'benefits': 'Can provide healthy fats (from olive oil) and antioxidants (from tomatoes and garlic). Supports heart health.',
+                    'disadvantages': 'Can be high in calories and sodium, especially if topped with cheese or processed meats.',
+                    'nutrients': 'Depends on ingredients; commonly includes fiber, vitamins A and C, healthy fats, and antioxidants'
+                },
+                'burrito': {
+                    'calories': 'Varies widely based on size and ingredients; typically 300-800 kcal per burrito',
+                    'benefits': 'Can be a good source of protein, fiber, and various nutrients if made with wholesome ingredients like beans, vegetables, and lean meats.',
+                    'disadvantages': 'Can be high in calories, fat, and sodium, especially if loaded with cheese, sour cream, and processed meats.',
+                    'nutrients': 'Protein, fiber, carbohydrates, vitamins and minerals (varies based on ingredients)'
+                },
+                'cabbage': {
+                    'calories': '25 kcal per 100g',
+                    'benefits': 'Low in calories and high in vitamins C and K, fiber, and antioxidants. Supports digestive health and has anti-inflammatory properties.',
+                    'disadvantages': 'May cause gas and bloating in some people.',
+                    'nutrients': 'Vitamins C, K, folate, fiber, potassium'
+                },
+                'cake': {
+                    'calories': 'Varies widely; typically around 350-450 kcal per slice (100g)',
+                    'benefits': 'Provides energy and can be a source of enjoyment and celebration.',
+                    'disadvantages': 'High in sugar, fats, and calories. Often low in essential nutrients.',
+                    'nutrients': 'Carbohydrates, sugars, fats, some protein (varies by ingredients)'
+                },
+                'carneasada': {
+                    'calories': 'Around 150-200 kcal per 100g (cooked)',
+                    'benefits': 'High in protein, iron, and B vitamins. Supports muscle maintenance and energy levels.',
+                    'disadvantages': 'Can be high in sodium and fat, depending on preparation. Should be consumed in moderation.',
+                    'nutrients': 'Protein, iron, B vitamins (especially B12), zinc, sodium'
+                },
+                'carrots': {
+                    'calories': '41 kcal per 100g',
+                    'benefits': 'High in beta-carotene (vitamin A), fiber, and antioxidants. Supports eye health and immune function.',
+                    'disadvantages': 'Generally safe, but excessive consumption can lead to carotenemia (yellowing of the skin).',
+                    'nutrients': 'Vitamin A, fiber, vitamin K, potassium, antioxidants'
+                },
+                'catfish': {
+                    'calories': '105 kcal per 100g (cooked)',
+                    'benefits': 'Good source of protein and omega-3 fatty acids. Supports heart health and muscle maintenance.',
+                    'disadvantages': 'Farmed catfish can contain higher levels of contaminants. Should be consumed in moderation.',
+                    'nutrients': 'Protein, omega-3 fatty acids, B vitamins, selenium, phosphorus'
+                },
+                'celery': {
+                    'calories': '16 kcal per 100g',
+                    'benefits': 'Low in calories and high in water content. Provides fiber, vitamin K, and potassium. Supports hydration and digestion.',
+                    'disadvantages': 'Can cause digestive discomfort in some people if consumed in large amounts.',
+                    'nutrients': 'Fiber, vitamin K, potassium, folate, vitamin C'
+                },
+                'cereal': {
+                    'calories': 'Varies widely; typically around 100-150 kcal per serving (30g)',
+                    'benefits': 'Can be a good source of vitamins and minerals if fortified. Provides carbohydrates for energy.',
+                    'disadvantages': 'Can be high in sugar and low in fiber, especially in processed cereals.',
+                    'nutrients': 'Carbohydrates, vitamins and minerals (varies by type and fortification), fiber (if whole grain)'
+                },
+                'cheese': {
+                    'calories': 'Around 350-400 kcal per 100g',
+                    'benefits': 'Good source of protein, calcium, and healthy fats. Supports bone health and provides essential nutrients.',
+                    'disadvantages': 'High in saturated fats and sodium. Should be consumed in moderation.',
+                    'nutrients': 'Protein, calcium, phosphorus, vitamin B12, fats (including saturated fat)'
+                },
+                'cherries': {
+                    'calories': '63 kcal per 100g',
+                    'benefits': 'Rich in antioxidants, fiber, and vitamin C. May help reduce inflammation and support heart health.',
+                    'disadvantages': 'Contains natural sugars, so portion control is important for those monitoring sugar intake.',
+                    'nutrients': 'Vitamin C, fiber, potassium, antioxidants, natural sugars'
+                },
+                'chicken': {
+                    'calories': '165 kcal per 100g (cooked, skinless breast)',
+                    'benefits': 'High in protein and low in fat (especially in white meat). Provides essential B vitamins and minerals.',
+                    'disadvantages': 'Can be high in sodium and fat if prepared with skin or fried. Proper cooking is essential to avoid foodborne illnesses.',
+                    'nutrients': 'Protein, B vitamins (especially B6 and B12), phosphorus, selenium'
+                },
+                'chimichanga': {
+                    'calories': 'Varies widely; typically around 300-600 kcal per serving',
+                    'benefits': 'Can provide protein and essential nutrients depending on the filling.',
+                    'disadvantages': 'Often high in calories, fat, and sodium, especially if deep-fried.',
+                    'nutrients': 'Protein, carbohydrates, fats (including saturated fats), vitamins and minerals (varies by filling)'
+                },
+                'chips': {
+                    'calories': 'Around 150-160 kcal per 1-ounce serving (28g)',
+                    'benefits': 'Provides a quick source of energy and can be a convenient snack.',
+                    'disadvantages': 'High in fat, sodium, and often low in essential nutrients. Can contribute to weight gain if consumed excessively.',
+                    'nutrients': 'Carbohydrates, fats (including saturated fats), sodium'
+                },
+                'chocolate': {
+                    'calories': 'Around 540 kcal per 100g (dark chocolate)',
+                    'benefits': 'Rich in antioxidants, particularly dark chocolate. Can improve mood and provide cardiovascular benefits.',
+                    'disadvantages': 'High in calories and sugar. Should be consumed in moderation.',
+                    'nutrients': 'Antioxidants, iron, magnesium, sugar, fats'
+                },
+                'chowder': {
+                    'calories': 'Varies widely; typically around 200-300 kcal per cup',
+                    'benefits': 'Can be rich in protein and essential nutrients if made with seafood and vegetables.',
+                    'disadvantages': 'Often high in sodium and fat, especially if made with cream.',
+                    'nutrients': 'Protein, fats (including saturated fats), vitamins and minerals (varies by ingredients)'
+                },
+                'clams': {
+                    'calories': '148 kcal per 100g (cooked)',
+                    'benefits': 'High in protein, omega-3 fatty acids, and minerals like iron and selenium. Supports cardiovascular and immune health.',
+                    'disadvantages': 'May contain contaminants from polluted waters. Should be sourced responsibly.',
+                    'nutrients': 'Protein, omega-3 fatty acids, iron, selenium, vitamin B12'
+                },
+                'coconut': {
+                    'calories': '354 kcal per 100g (dried, unsweetened)',
+                    'benefits': 'Rich in healthy fats, particularly medium-chain triglycerides (MCTs). Provides fiber and essential minerals.',
+                    'disadvantages': 'High in saturated fat. Calorie-dense, so portion control is important.',
+                    'nutrients': 'Healthy fats, fiber, manganese, copper, selenium'
+                },
+                'coffee': {
+                    'calories': '2 kcal per 100g (black)',
+                    'benefits': 'Low in calories and rich in antioxidants. Can improve alertness and may have several health benefits.',
+                    'disadvantages': 'Excessive consumption can lead to anxiety, insomnia, and digestive issues. Can be high in calories if consumed with sugar and cream.',
+                    'nutrients': 'Antioxidants, minimal calories, caffeine'
+                },
+                'cookies': {
+                    'calories': 'Around 200-300 kcal per 100g',
+                    'benefits': 'Can provide a quick source of energy and satisfaction.',
+                    'disadvantages': 'High in sugar, fats, and calories. Often low in essential nutrients.',
+                    'nutrients': 'Carbohydrates, sugars, fats (including saturated fats), some protein'
+                },
+                'corn': {
+                    'calories': '86 kcal per 100g (cooked)',
+                    'benefits': 'Good source of carbohydrates, fiber, and essential vitamins and minerals. Supports energy production and digestion.',
+                    'disadvantages': 'Can be high in carbs. Some processed corn products may lack essential nutrients.',
+                    'nutrients': 'Carbohydrates, fiber, B vitamins, folate, magnesium, potassium'
+                },
+                'cottagecheese': {
+                    'calories': '98 kcal per 100g (low-fat)',
+                    'benefits': 'High in protein and calcium. Low in fat if choosing the low-fat version. Supports muscle maintenance and bone health.',
+                    'disadvantages': 'Can be high in sodium. Some versions may contain added sugars.',
+                    'nutrients': 'Protein, calcium, B vitamins, phosphorus'
+                },
+                'crab': {
+                    'calories': '97 kcal per 100g (cooked)',
+                    'benefits': 'High in protein, omega-3 fatty acids, and minerals like selenium and zinc. Supports immune function and heart health.',
+                    'disadvantages': 'Can be high in sodium, especially if processed. Some species may contain contaminants.',
+                    'nutrients': 'Protein, omega-3 fatty acids, selenium, zinc, vitamin B12'
+                },
+                'cupcakes': {
+                    'calories': 'Around 350-400 kcal per cupcake (average size)',
+                    'benefits': 'Provides a quick source of energy and enjoyment.',
+                    'disadvantages': 'High in sugar, fats, and calories. Low in essential nutrients.',
+                    'nutrients': 'Carbohydrates, sugars, fats (including saturated fats), minimal protein'
+                },
+                'curry': {
+                    'calories': 'Varies widely; typically around 200-300 kcal per serving',
+                    'benefits': 'Rich in spices that contain antioxidants and anti-inflammatory compounds. Can provide protein and various nutrients.',
+                    'disadvantages': 'Can be high in fat and calories if made with creamy sauces. May contain high levels of sodium.',
+                    'nutrients': 'Varies by ingredients; commonly includes protein, healthy fats, fiber, and a range of vitamins and minerals'
+                },
+                'dates': {
+        'calories': '282 kcal per 100g',
+        'benefits': 'Rich in natural sugars, fiber, potassium, and antioxidants. Provides quick energy, supports digestive health, and contains essential minerals.',
+        'disadvantages': 'High in calories and sugar content. Should be consumed in moderation, especially by those monitoring sugar intake.',
+        'nutrients': 'Natural sugars, fiber, potassium, magnesium, copper, vitamin B6'
+    },
+    'dips': {
+        'calories': 'Varies widely depending on type and ingredients; typically 50-200 kcal per serving (2 tablespoons)',
+        'benefits': 'Can provide a range of nutrients and flavors, depending on ingredients. Commonly includes healthy fats and vitamins.',
+        'disadvantages': 'Can be high in calories, fats, and sodium, especially creamy or cheese-based dips.',
+        'nutrients': 'Varies widely; commonly includes fats, protein, carbohydrates, and vitamins (depending on ingredients)'
+    },
+    'donuts': {
+        'calories': 'Varies widely; typically around 250-350 kcal per donut (average size)',
+        'benefits': 'Provides a quick source of energy and satisfaction. Often enjoyed as a treat.',
+        'disadvantages': 'High in sugar, fats, and calories. Low in essential nutrients and can contribute to weight gain if consumed excessively.',
+        'nutrients': 'Carbohydrates, sugars, fats (including trans fats in some varieties), minimal protein'
+    },
+    'duck': {
+        'calories': '337 kcal per 100g (roasted with skin)',
+        'benefits': 'Rich in protein, healthy fats, and several vitamins and minerals. Contains iron, zinc, and B vitamins.',
+        'disadvantages': 'High in fat and cholesterol, especially if eaten with the skin. Should be consumed in moderation.',
+        'nutrients': 'Protein, fats (including saturated fats), iron, zinc, B vitamins (especially B6 and B12)'
+    },
+    'dumplings': {
+        'calories': 'Varies widely; typically around 200-250 kcal per serving (3-4 pieces)',
+        'benefits': 'Can be a good source of protein and carbohydrates, depending on the filling. Versatile and can include vegetables and meats.',
+        'disadvantages': 'Can be high in sodium and fats, especially if fried. The nutritional value varies significantly based on the type and preparation.',
+        'nutrients': 'Protein, carbohydrates, fats (varies by filling), sodium'
+    },
+    'edamame': {
+        'calories': '121 kcal per 100g',
+        'benefits': 'Rich in protein, fiber, and essential amino acids. Provides iron, calcium, and antioxidants. Supports muscle health and digestive health.',
+        'disadvantages': 'May cause digestive issues in some people if consumed in large quantities due to high fiber content.',
+        'nutrients': 'Protein, fiber, iron, calcium, vitamin C, folate'
+    },
+    'eel sushi': {
+        'calories': '200-250 kcal per serving (6 pieces)',
+        'benefits': 'High in protein, omega-3 fatty acids, and essential vitamins. Supports heart health and provides a rich source of nutrients.',
+        'disadvantages': 'Can be high in sodium, especially if prepared with soy sauce. Eel sauce used can add extra sugar and calories.',
+        'nutrients': 'Protein, omega-3 fatty acids, vitamin A, B vitamins, selenium'
+    },
+    'eggrolls': {
+        'calories': '150-200 kcal per roll',
+        'benefits': 'Provides protein and various nutrients depending on the filling. Can be a good source of vegetables.',
+        'disadvantages': 'Often high in fat and calories, especially if deep-fried. Can be high in sodium.',
+        'nutrients': 'Protein, carbohydrates, fats, vitamins and minerals (varies by filling)'
+    },
+    'eggs': {
+        'calories': '155 kcal per 100g',
+        'benefits': 'High in high-quality protein, choline, and essential vitamins and minerals. Supports muscle maintenance and brain health.',
+        'disadvantages': 'Contains cholesterol, though recent research suggests it may not significantly impact blood cholesterol levels for most people.',
+        'nutrients': 'Protein, choline, vitamins A, D, B12, selenium'
+    },
+    'enchilada': {
+        'calories': '250-350 kcal per enchilada',
+        'benefits': 'Can provide a good source of protein, carbohydrates, and various vitamins and minerals. Often contains fiber if made with beans.',
+        'disadvantages': 'Can be high in fat, sodium, and calories, especially if topped with cheese or sour cream.',
+        'nutrients': 'Protein, carbohydrates, fats, fiber (if beans are included), vitamins and minerals (varies by ingredients)'
+    },
+    'english muffins': {
+        'calories': '220 kcal per muffin (average size)',
+        'benefits': 'Provides a good source of carbohydrates and energy. Often fortified with vitamins and minerals.',
+        'disadvantages': 'Can be high in refined carbs and low in fiber, especially if made from white flour.',
+        'nutrients': 'Carbohydrates, protein, fiber (if whole grain), B vitamins'
+    },
+    'fajita': {
+        'calories': '300-400 kcal per serving (without tortillas)',
+        'benefits': 'Can be a good source of protein, vitamins, and minerals if made with lean meats and vegetables.',
+        'disadvantages': 'Can be high in sodium and fat, especially if prepared with cheese, sour cream, or heavy oils.',
+        'nutrients': 'Protein, fiber, vitamins and minerals (varies by ingredients), fats'
+    },
+    'falafel': {
+        'calories': '330 kcal per 100g',
+        'benefits': 'Rich in plant-based protein, fiber, and complex carbohydrates. Contains vitamins and minerals, especially if made with chickpeas.',
+        'disadvantages': 'Can be high in fat if deep-fried. May cause digestive issues in some people due to high fiber content.',
+        'nutrients': 'Protein, fiber, vitamins B6, C, folate, iron, magnesium'
+    },
+    'fish': {
+        'calories': 'Varies widely depending on the type of fish; typically 100-200 kcal per 100g (cooked)',
+        'benefits': 'High in protein, omega-3 fatty acids, and essential nutrients. Supports heart health, brain function, and overall well-being.',
+        'disadvantages': 'Some fish may contain high levels of mercury or other contaminants. Should be consumed in moderation.',
+        'nutrients': 'Protein, omega-3 fatty acids, vitamins D, B12, selenium, iodine'
+    },
+    'fondue': {
+        'calories': 'Varies widely; typically 400-500 kcal per serving (100g)',
+        'benefits': 'Can be a source of calcium and protein if made with cheese. Provides healthy fats.',
+        'disadvantages': 'High in saturated fat and calories. Often contains significant amounts of sodium.',
+        'nutrients': 'Protein, calcium, fats (including saturated fats), sodium'
+    },
+    'franks': {
+        'calories': '150-200 kcal per frank (average size)',
+        'benefits': 'Provides protein and can be a convenient source of energy.',
+        'disadvantages': 'Often high in sodium, fats, and preservatives. Some varieties may contain processed meat products.',
+        'nutrients': 'Protein, fats (including saturated fats), sodium'
+    },
+    'french dip': {
+        'calories': '500-600 kcal per sandwich',
+        'benefits': 'Provides protein and various nutrients depending on the filling and bread used.',
+        'disadvantages': 'Can be high in sodium, fats, and calories. Often served with au jus, which can add to sodium content.',
+        'nutrients': 'Protein, carbohydrates, fats, vitamins and minerals (varies by ingredients)'
+    },
+    'french toast': {
+        'calories': '220-300 kcal per slice (depends on preparation)',
+        'benefits': 'Provides protein, carbohydrates, and some essential nutrients. Often enriched with eggs, milk, and cinnamon.',
+        'disadvantages': 'Can be high in sugar, fats, and calories, especially if topped with syrup and butter.',
+        'nutrients': 'Protein, carbohydrates, fats, vitamins (varies by preparation), calcium'
+    },
+    'garlic': {
+        'calories': '149 kcal per 100g',
+        'benefits': 'Contains potent antioxidants and anti-inflammatory compounds. Supports immune function and heart health.',
+        'disadvantages': 'Can cause digestive discomfort or bad breath if consumed in large quantities.',
+        'nutrients': 'Vitamins C, B6, manganese, selenium, fiber'
+    },
+    'ginger': {
+        'calories': '80 kcal per 100g',
+        'benefits': 'Contains anti-inflammatory and antioxidant properties. Aids digestion, reduces nausea, and supports immune function.',
+        'disadvantages': 'Can cause digestive discomfort in some people if consumed in large quantities.',
+        'nutrients': 'Gingerol (active compound), vitamins B6, C, manganese, fiber'
+    },
+    'gnocchi': {
+        'calories': '130-150 kcal per 100g (cooked)',
+        'benefits': 'Provides carbohydrates and some protein. Can be a versatile base for various dishes.',
+        'disadvantages': 'Can be high in refined carbohydrates and calories, depending on preparation and toppings.',
+        'nutrients': 'Carbohydrates, protein, small amounts of vitamins and minerals (varies by ingredients)'
+    },
+    'goatcheese': {
+        'calories': '364 kcal per 100g',
+        'benefits': 'Rich in protein, calcium, and healthy fats. Contains probiotics that support digestive health.',
+        'disadvantages': 'High in saturated fat and calories. Should be consumed in moderation.',
+        'nutrients': 'Protein, calcium, phosphorus, healthy fats, probiotics'
+    },
+    'garbanzo beans': {
+        'calories': '164 kcal per 100g (cooked)',
+        'benefits': 'High in fiber, protein, and essential nutrients. Supports digestive health and provides plant-based protein.',
+        'disadvantages': 'May cause digestive discomfort or gas in some people.',
+        'nutrients': 'Fiber, protein, iron, folate, phosphorus, manganese'
+    },
+    'goose': {
+        'calories': '371 kcal per 100g (roasted with skin)',
+        'benefits': 'Rich in protein, iron, and several B vitamins. Contains healthy fats, particularly if consumed without the skin.',
+        'disadvantages': 'High in fat and cholesterol, especially if eaten with the skin. Should be consumed in moderation.',
+        'nutrients': 'Protein, iron, B vitamins, healthy fats, zinc'
+    },
+    'graham crackers': {
+        'calories': '430 kcal per 100g',
+        'benefits': 'Provides carbohydrates and can be a convenient snack. Often fortified with vitamins and minerals.',
+        'disadvantages': 'High in refined carbs and sugars. Often low in fiber and other essential nutrients.',
+        'nutrients': 'Carbohydrates, sugars, small amounts of protein, B vitamins (if fortified)'
+    },
+    'granola': {
+        'calories': '450-500 kcal per 100g',
+        'benefits': 'Rich in fiber, healthy fats, and various nutrients. Provides energy and can be a good source of whole grains.',
+        'disadvantages': 'Can be high in sugar and calories, especially if sweetened or with added fats.',
+        'nutrients': 'Fiber, protein, healthy fats, vitamins and minerals (varies by ingredients)'
+    },
+    'grapes': {
+        'calories': '69 kcal per 100g',
+        'benefits': 'Rich in antioxidants, particularly resveratrol. Provides vitamins C and K, and supports heart health.',
+        'disadvantages': 'Contains natural sugars, so portion control is important for those monitoring sugar intake.',
+        'nutrients': 'Vitamins C, K, antioxidants (resveratrol), potassium, natural sugars'
+    },
+    'green beans': {
+        'calories': '31 kcal per 100g',
+        'benefits': 'Low in calories and rich in vitamins A, C, and K. Provides fiber and supports digestive health.',
+        'disadvantages': 'Generally safe; excessive consumption may cause digestive issues due to fiber content.',
+        'nutrients': 'Vitamins A, C, K, fiber, folate, iron'
+    },
+    'grits': {
+        'calories': '59 kcal per 100g (cooked)',
+        'benefits': 'Provides a good source of carbohydrates and energy. Often fortified with vitamins and minerals.',
+        'disadvantages': 'Can be low in fiber and protein. Often prepared with added fats and sugars.',
+        'nutrients': 'Carbohydrates, small amounts of protein, B vitamins (if fortified), iron'
+    },
+    'guacamole': {
+        'calories': '160 kcal per 100g',
+        'benefits': 'Rich in healthy fats, particularly monounsaturated fats. Provides fiber, vitamins C and K, and potassium.',
+        'disadvantages': 'High in calories and fat. Should be consumed in moderation, especially with high-calorie accompaniments.',
+        'nutrients': 'Healthy fats, fiber, vitamins C, K, folate, potassium'
+    },
+    'gumbo': {
+        'calories': 'Varies widely; typically around 150-300 kcal per serving',
+        'benefits': 'Can be rich in protein and various nutrients depending on the ingredients. Often includes vegetables and seafood.',
+        'disadvantages': 'Can be high in sodium and fat, especially if made with sausage or added fats.',
+        'nutrients': 'Protein, vitamins and minerals (varies by ingredients), fats, sodium'
+    },
+    'halibut': {
+        'calories': '111 kcal per 100g (cooked)',
+        'benefits': 'High in protein and omega-3 fatty acids. Supports heart health and provides essential nutrients.',
+        'disadvantages': 'Can contain environmental contaminants like mercury. Should be sourced responsibly.',
+        'nutrients': 'Protein, omega-3 fatty acids, selenium, magnesium, vitamin B12'
+    },
+    'ham': {
+        'calories': '145 kcal per 100g (cooked)',
+        'benefits': 'Rich in protein, B vitamins, and minerals like iron and zinc. Provides a versatile source of protein.',
+        'disadvantages': 'Can be high in sodium and fats. Processed versions may contain preservatives.',
+        'nutrients': 'Protein, B vitamins, iron, zinc, sodium'
+    },
+    'hamburger': {
+        'calories': '250-300 kcal per 100g patty (without bun or toppings)',
+        'benefits': 'High in protein, iron, and B vitamins. Provides a good source of energy and nutrients.',
+        'disadvantages': 'Can be high in saturated fat and cholesterol. Nutritional value varies widely based on preparation and toppings.',
+        'nutrients': 'Protein, iron, B vitamins, fats (including saturated fats)'
+    },
+    'hash browns': {
+        'calories': '326 kcal per 100g',
+        'benefits': 'Provides carbohydrates and energy. Can be a convenient and versatile dish.',
+        'disadvantages': 'Often high in fat and calories, especially if deep-fried. Can be high in sodium.',
+        'nutrients': 'Carbohydrates, fats, small amounts of vitamins and minerals (varies by preparation)'
+    },
+    'hot dogs': {
+        'calories': '150-180 kcal per hot dog (average size)',
+        'benefits': 'Provides protein and can be a convenient source of energy.',
+        'disadvantages': 'Often high in sodium, fats, and preservatives. Some varieties may contain processed meat products.',
+        'nutrients': 'Protein, fats (including saturated fats), sodium'
+    },
+    'huevos rancheros': {
+        'calories': '250-350 kcal per serving',
+        'benefits': 'Rich in protein, fiber, and essential nutrients. Often includes eggs, beans, and vegetables.',
+        'disadvantages': 'Can be high in calories, fat, and sodium depending on preparation.',
+        'nutrients': 'Protein, fiber, vitamins and minerals (varies by ingredients), fats'
+    },
+    'hummus': {
+        'calories': '166 kcal per 100g',
+        'benefits': 'Rich in plant-based protein, fiber, and healthy fats. Contains vitamins and minerals, especially if made with chickpeas and tahini.',
+        'disadvantages': 'Can be high in calories if consumed in large quantities. Some store-bought varieties may contain added preservatives.',
+        'nutrients': 'Protein, fiber, healthy fats, vitamins B6, C, folate, iron'
+    },
+    'icecream': {
+        'calories': '207 kcal per 100g',
+        'benefits': 'Provides calcium and some vitamins. Can be a source of enjoyment and occasional treat.',
+        'disadvantages': 'High in sugar and saturated fats. Can contribute to weight gain and increased risk of chronic diseases if consumed in excess.',
+        'nutrients': 'Calcium, protein, sugars, fats (including saturated fats)'
+    },
+    'indian food': {
+        'calories': 'Varies widely; typically 200-500 kcal per serving depending on dish',
+        'benefits': 'Rich in spices, which have antioxidant and anti-inflammatory properties. Often includes a variety of vegetables, legumes, and lean proteins.',
+        'disadvantages': 'Can be high in fats and calories, especially dishes with creamy sauces or fried components. May contain high levels of sodium.',
+        'nutrients': 'Protein, carbohydrates, healthy fats, vitamins and minerals (varies by dish)'
+    },
+    'irish stew': {
+        'calories': '150-200 kcal per 100g',
+        'benefits': 'Provides protein and essential nutrients. Often includes a variety of vegetables, contributing to fiber and vitamin intake.',
+        'disadvantages': 'Can be high in sodium and fats, depending on the meat and preparation method.',
+        'nutrients': 'Protein, carbohydrates, fats, vitamins and minerals (varies by ingredients)'
+    },
+    'italian bread': {
+        'calories': '258 kcal per 100g',
+        'benefits': 'Provides carbohydrates and energy. Can be a good source of B vitamins and minerals if made with whole grains.',
+        'disadvantages': 'Often made with refined flour, which can be low in fiber. Can be high in sodium if seasoned.',
+        'nutrients': 'Carbohydrates, small amounts of protein, B vitamins, iron'
+    },
+    'jalapeño': {
+        'calories': '29 kcal per 100g',
+        'benefits': 'Rich in vitamin C and antioxidants. Contains capsaicin, which has anti-inflammatory properties and may aid metabolism.',
+        'disadvantages': 'Can cause digestive discomfort in some people. May irritate skin or eyes if not handled properly.',
+        'nutrients': 'Vitamin C, vitamin A, antioxidants, capsaicin, fiber'
+    },
+    'jambalaya': {
+        'calories': '250-350 kcal per serving',
+        'benefits': 'Provides a balanced mix of protein, carbohydrates, and fats. Often includes a variety of vegetables and spices.',
+        'disadvantages': 'Can be high in sodium and fats, depending on the meats and preparation method.',
+        'nutrients': 'Protein, carbohydrates, fats, vitamins and minerals (varies by ingredients)'
+    },
+    'jelly / jam': {
+        'calories': '250 kcal per 100g',
+        'benefits': 'Provides a quick source of energy from sugars. Can contain some vitamins and antioxidants from fruits.',
+        'disadvantages': 'High in sugars and calories. Often low in fiber and other nutrients.',
+        'nutrients': 'Sugars, carbohydrates, small amounts of vitamins (varies by fruit)'
+    },
+    'jerky': {
+        'calories': '410 kcal per 100g',
+        'benefits': 'High in protein and convenient for on-the-go snacking. Can be a good source of iron and other minerals.',
+        'disadvantages': 'Often high in sodium and may contain preservatives. Some varieties can be high in fat.',
+        'nutrients': 'Protein, fats, iron, sodium'
+    },
+    'kabobs': {
+        'calories': 'Varies widely; typically around 150-300 kcal per skewer depending on ingredients',
+        'benefits': 'Provides a good source of protein and vegetables. Often grilled, which can reduce fat content.',
+        'disadvantages': 'Can be high in sodium if marinated in salty sauces. Nutritional content varies widely based on ingredients.',
+        'nutrients': 'Protein, vitamins and minerals (varies by ingredients), fats'
+    },
+    'kale': {
+        'calories': '35 kcal per 100g',
+        'benefits': 'Highly nutrient-dense, rich in vitamins A, C, and K. Contains fiber, antioxidants, and several important minerals.',
+        'disadvantages': 'Can cause digestive discomfort or bloating in some people due to high fiber content.',
+        'nutrients': 'Vitamins A, C, K, fiber, calcium, iron, antioxidants'
+    },
+    'ketchup': {
+        'calories': '112 kcal per 100g',
+        'benefits': 'Provides lycopene, an antioxidant. Often used as a flavorful condiment.',
+        'disadvantages': 'High in sugars and sodium. Contains minimal nutrients.',
+        'nutrients': 'Sugars, sodium, small amounts of vitamins (e.g., vitamin A)'
+    },
+    'kidney beans': {
+        'calories': '127 kcal per 100g (cooked)',
+        'benefits': 'Rich in protein, fiber, and essential nutrients. Supports digestive health and provides plant-based protein.',
+        'disadvantages': 'May cause digestive discomfort in some people. Should be cooked thoroughly to eliminate toxins.',
+        'nutrients': 'Protein, fiber, iron, folate, potassium, magnesium'
+    },
+    'kingfish': {
+        'calories': '134 kcal per 100g (cooked)',
+        'benefits': 'High in protein and omega-3 fatty acids. Supports heart health and provides essential nutrients.',
+        'disadvantages': 'Can contain environmental contaminants like mercury. Should be consumed in moderation.',
+        'nutrients': 'Protein, omega-3 fatty acids, selenium, vitamin D, B vitamins'
+    },
+    'kiwi': {
+        'calories': '61 kcal per 100g',
+        'benefits': 'High in vitamin C and antioxidants. Contains fiber and several other vitamins and minerals. Supports immune and digestive health.',
+        'disadvantages': 'May cause allergic reactions in some people.',
+        'nutrients': 'Vitamin C, fiber, vitamin K, vitamin E, potassium'
+    },
+    'lamb': {
+        'calories': '294 kcal per 100g (roasted)',
+        'benefits': 'Rich in high-quality protein, iron, and B vitamins. Contains healthy fats and provides essential nutrients.',
+        'disadvantages': 'Can be high in saturated fat and cholesterol. Should be consumed in moderation.',
+        'nutrients': 'Protein, iron, B vitamins (especially B12), zinc, fats (including saturated fats)'
+    },
+    'lasagna': {
+        'calories': '270-350 kcal per serving (depends on preparation)',
+        'benefits': 'Provides protein, carbohydrates, and essential nutrients. Can include a variety of vegetables, meats, and cheeses.',
+        'disadvantages': 'Can be high in calories, fats, and sodium, especially with rich sauces and cheeses.',
+        'nutrients': 'Protein, carbohydrates, fats, vitamins and minerals (varies by ingredients)'
+    },
+    'linguine': {
+        'calories': '158 kcal per 100g (cooked)',
+        'benefits': 'Provides carbohydrates and energy. Can be a good source of B vitamins and iron if enriched.',
+        'disadvantages': 'Often made from refined flour, which can be low in fiber. Nutritional value depends on sauce and toppings.',
+        'nutrients': 'Carbohydrates, small amounts of protein, B vitamins (if enriched), iron'
+    },
+    'lobster': {
+        'calories': '89 kcal per 100g (cooked)',
+        'benefits': 'Rich in protein, low in fat. Contains several important minerals, including zinc and selenium.',
+        'disadvantages': 'Can be high in cholesterol. Often served with butter, which can add calories and fat.',
+        'nutrients': 'Protein, selenium, zinc, vitamin B12, phosphorus'
+    },
+    'mangoes': {
+        'calories': '60 kcal per 100g',
+        'benefits': 'High in vitamin C and vitamin A. Contains fiber and antioxidants. Supports immune health and digestion.',
+        'disadvantages': 'Contains natural sugars; should be consumed in moderation by those monitoring sugar intake.',
+        'nutrients': 'Vitamin C, vitamin A, fiber, antioxidants, potassium'
+    },
+    'meatballs': {
+        'calories': '220-300 kcal per 100g (depends on meat and preparation)',
+        'benefits': 'Rich in protein and iron. Can provide a good source of essential nutrients if made with lean meats and herbs.',
+        'disadvantages': 'Can be high in fats, sodium, and calories, especially if fried or served with rich sauces.',
+        'nutrients': 'Protein, iron, fats (including saturated fats), B vitamins'
+    },
+    'milk': {
+        'calories': '42 kcal per 100ml (whole milk)',
+        'benefits': 'Provides calcium, protein, and essential vitamins. Supports bone health and provides a source of energy.',
+        'disadvantages': 'High in saturated fats in full-fat varieties. Some people may be lactose intolerant.',
+        'nutrients': 'Protein, calcium, vitamin D, B vitamins, fats (varies by fat content)'
+    },
+    'milkshake': {
+        'calories': 'Varies widely; typically around 200-500 kcal per serving',
+        'benefits': 'Provides calcium and protein. Can be a source of enjoyment and treat.',
+        'disadvantages': 'High in sugars and fats. Can be high in calories and contribute to weight gain if consumed frequently.',
+        'nutrients': 'Protein, calcium, sugars, fats (including saturated fats)'
+    },
+    'moose': {
+        'calories': '120 kcal per 100g (cooked)',
+        'benefits': 'High in protein and lean. Provides essential vitamins and minerals like iron and B vitamins.',
+        'disadvantages': 'Can be tough and may require specific preparation methods. Availability can be limited.',
+        'nutrients': 'Protein, iron, B vitamins, selenium'
+    },
+    'mushrooms': {
+        'calories': '22 kcal per 100g',
+        'benefits': 'Low in calories, rich in antioxidants, vitamins, and minerals. Supports immune function and provides dietary fiber.',
+        'disadvantages': 'Some wild mushrooms can be toxic if not identified correctly. Generally safe but should be eaten cooked to reduce potential toxins.',
+        'nutrients': 'Vitamins B, D, antioxidants, selenium, potassium, fiber'
+    },
+    'noodles': {
+        'calories': '138 kcal per 100g (cooked)',
+        'benefits': 'Provides carbohydrates and energy. Can be a good source of B vitamins if enriched.',
+        'disadvantages': 'Often made from refined flour, which can be low in fiber. Nutritional content depends on preparation and toppings.',
+        'nutrients': 'Carbohydrates, small amounts of protein, B vitamins (if enriched), iron'
+    },
+    'oatmeal': {
+        'calories': '68 kcal per 100g (cooked)',
+        'benefits': 'High in fiber, particularly beta-glucan. Supports heart health, aids digestion, and helps maintain stable blood sugar levels.',
+        'disadvantages': 'Can be bland on its own; often flavored with added sugars, which can increase calorie content.',
+        'nutrients': 'Fiber, protein, iron, B vitamins, magnesium, antioxidants'
+    },
+    'olives': {
+        'calories': '115 kcal per 100g',
+        'benefits': 'Rich in healthy fats, particularly monounsaturated fats. Contains antioxidants and anti-inflammatory compounds.',
+        'disadvantages': 'High in sodium if brined. Should be consumed in moderation due to fat content.',
+        'nutrients': 'Healthy fats, vitamin E, iron, fiber, antioxidants'
+    },
+    'ostrich': {
+        'calories': '142 kcal per 100g (cooked)',
+        'benefits': 'High in protein and low in fat. Provides essential nutrients like iron and B vitamins.',
+        'disadvantages': 'Availability can be limited. May be more expensive than other meats.',
+        'nutrients': 'Protein, iron, B vitamins, selenium'
+    },
+    'pancakes': {
+        'calories': '227 kcal per 100g',
+        'benefits': 'Provides carbohydrates and energy. Can be fortified with vitamins and minerals.',
+        'disadvantages': 'Often high in sugars and fats, especially with added syrups and toppings. Can be low in fiber if made with refined flour.',
+        'nutrients': 'Carbohydrates, small amounts of protein, B vitamins (if enriched), iron'
+    },
+    'pears': {
+        'calories': '57 kcal per 100g',
+        'benefits': 'High in dietary fiber and vitamin C. Contains antioxidants and supports digestive health.',
+        'disadvantages': 'Contains natural sugars; should be consumed in moderation by those monitoring sugar intake.',
+        'nutrients': 'Fiber, vitamin C, potassium, antioxidants'
+    },
+    'pepperoni': {
+        'calories': '504 kcal per 100g',
+        'benefits': 'Rich in protein and provides a flavorful addition to various dishes.',
+        'disadvantages': 'High in saturated fats, sodium, and processed meat. Can increase risk of chronic diseases if consumed frequently.',
+        'nutrients': 'Protein, fats (including saturated fats), sodium, iron'
+    },
+    'pineapple': {
+        'calories': '50 kcal per 100g',
+        'benefits': 'High in vitamin C and manganese. Contains bromelain, an enzyme with anti-inflammatory properties. Supports immune function and digestion.',
+        'disadvantages': 'Contains natural sugars; should be consumed in moderation by those monitoring sugar intake.',
+        'nutrients': 'Vitamin C, manganese, fiber, antioxidants, bromelain'
+    },
+    'pine nuts': {
+        'calories': '673 kcal per 100g',
+        'benefits': 'Rich in healthy fats, particularly monounsaturated fats. Provides protein, fiber, and various vitamins and minerals.',
+        'disadvantages': 'High in calories and fat. Should be consumed in moderation due to calorie density.',
+        'nutrients': 'Healthy fats, protein, fiber, vitamin E, magnesium, zinc'
+    },
+    'pinto beans': {
+        'calories': '143 kcal per 100g (cooked)',
+        'benefits': 'High in protein and fiber. Supports digestive health and provides essential nutrients.',
+        'disadvantages': 'May cause digestive discomfort in some people. Should be cooked thoroughly to ensure digestibility.',
+        'nutrients': 'Protein, fiber, iron, magnesium, potassium, folate'
+    },
+    'pizza': {
+        'calories': 'Varies widely; typically 200-300 kcal per slice',
+        'benefits': 'Provides protein and carbohydrates. Can include a variety of toppings that add vitamins and minerals.',
+        'disadvantages': 'Often high in fats, sodium, and calories, especially with processed meats and rich cheeses.',
+        'nutrients': 'Protein, fats (including saturated fats), carbohydrates, sodium'
+    },
+    'porter': {
+        'calories': 'Varies widely; typically around 200-300 kcal per pint',
+        'benefits': 'Provides a source of enjoyment and social bonding. Can contain small amounts of antioxidants from malt and hops.',
+        'disadvantages': 'High in calories and alcohol. Excessive consumption can lead to weight gain and other health issues.',
+        'nutrients': 'Carbohydrates, small amounts of B vitamins and minerals'
+    },
+    'quesadilla': {
+        'calories': '330-500 kcal per serving',
+        'benefits': 'Provides a good source of protein and calcium, especially if cheese is used. Can be customized with various nutritious fillings like vegetables and lean meats.',
+        'disadvantages': 'Can be high in fats, especially saturated fats, and calories, depending on the amount of cheese and oil used.',
+        'nutrients': 'Protein, fats (including saturated fats), calcium, carbohydrates'
+    },
+    'quiche': {
+        'calories': '290-350 kcal per slice',
+        'benefits': 'Rich in protein and essential nutrients, depending on fillings. Can include vegetables, meats, and cheese.',
+        'disadvantages': 'Often high in fats, particularly saturated fats, and calories due to crust and filling ingredients.',
+        'nutrients': 'Protein, fats (including saturated fats), vitamins and minerals (varies by ingredients), carbohydrates'
+    },
+    'raspberrys': {
+        'calories': '52 kcal per 100g',
+        'benefits': 'High in fiber, vitamin C, and antioxidants. Supports digestive health and has anti-inflammatory properties.',
+        'disadvantages': 'Contains natural sugars; should be consumed in moderation by those monitoring sugar intake.',
+        'nutrients': 'Fiber, vitamin C, manganese, antioxidants'
+    },
+    'refried beans': {
+        'calories': '120-150 kcal per 100g',
+        'benefits': 'Good source of protein and fiber. Provides essential nutrients like iron and magnesium.',
+        'disadvantages': 'Can be high in sodium and fats, especially if cooked with lard. Nutritional value depends on preparation method.',
+        'nutrients': 'Protein, fiber, iron, magnesium, potassium'
+    },
+    'reuben': {
+        'calories': '500-700 kcal per sandwich',
+        'benefits': 'Provides protein and essential nutrients from corned beef, cheese, and sauerkraut.',
+        'disadvantages': 'High in sodium, saturated fats, and calories. Contains processed meats which should be consumed in moderation.',
+        'nutrients': 'Protein, fats (including saturated fats), sodium, iron'
+    },
+    'rice cakes': {
+        'calories': '35-40 kcal per cake',
+        'benefits': 'Low in calories and can be a convenient, low-fat snack option. Often gluten-free and suitable for various dietary needs.',
+        'disadvantages': 'Low in nutrients and fiber. Can be high in sodium if flavored. May cause rapid blood sugar spikes.',
+        'nutrients': 'Carbohydrates, small amounts of protein and fiber (varies by type and flavor)'
+    },
+    'salmon': {
+        'calories': '208 kcal per 100g (cooked)',
+        'benefits': 'Rich in omega-3 fatty acids, high-quality protein, and essential vitamins and minerals. Supports heart health and brain function.',
+        'disadvantages': 'Can contain environmental contaminants like mercury and PCBs. Should be consumed in moderation.',
+        'nutrients': 'Protein, omega-3 fatty acids, vitamin D, B vitamins, selenium'
+    },
+    'spaghetti': {
+        'calories': '158 kcal per 100g (cooked)',
+        'benefits': 'Provides carbohydrates and energy. Can be a good source of B vitamins if enriched. Versatile base for various nutritious sauces and toppings.',
+        'disadvantages': 'Often made from refined flour, which can be low in fiber. Nutritional value depends on sauce and toppings.',
+        'nutrients': 'Carbohydrates, small amounts of protein, B vitamins (if enriched), iron'
+    },
+    'spinach': {
+        'calories': '23 kcal per 100g',
+        'benefits': 'Highly nutrient-dense, rich in vitamins A, C, and K. Contains iron, calcium, and antioxidants. Supports eye health, immune function, and bone health.',
+        'disadvantages': 'Contains oxalates, which can interfere with calcium absorption. May cause kidney stones in susceptible individuals if consumed in large amounts.',
+        'nutrients': 'Vitamins A, C, K, iron, calcium, fiber, antioxidants'
+    },
+    'strawberries': {
+        'calories': '32 kcal per 100g',
+        'benefits': 'High in vitamin C, fiber, and antioxidants. Supports immune health and has anti-inflammatory properties.',
+        'disadvantages': 'Contains natural sugars; should be consumed in moderation by those monitoring sugar intake.',
+        'nutrients': 'Vitamin C, fiber, manganese, antioxidants'
+    },
+    'sweet potatos': {
+        'calories': '86 kcal per 100g (cooked)',
+        'benefits': 'Rich in vitamins A and C, fiber, and potassium. Supports eye health, immune function, and provides complex carbohydrates.',
+        'disadvantages': 'Can be high in carbohydrates; should be consumed in moderation by those monitoring carbohydrate intake.',
+        'nutrients': 'Vitamin A, vitamin C, fiber, potassium, manganese'
+    },
+    'tater tots': {
+        'calories': '187 kcal per 100g',
+        'benefits': 'Provides carbohydrates and some fiber. Can be a convenient snack or side dish.',
+        'disadvantages': 'High in fats, especially if fried, and sodium. Often low in other nutrients.',
+        'nutrients': 'Carbohydrates, fats, sodium, small amounts of fiber'
+    },
+    'toast': {
+        'calories': '265 kcal per 100g (varies by bread type)',
+        'benefits': 'Provides carbohydrates and energy. Can be a source of fiber and essential nutrients if made with whole grain bread.',
+        'disadvantages': 'Nutritional value can be low if made with refined white bread. Often consumed with high-calorie toppings.',
+        'nutrients': 'Carbohydrates, small amounts of protein and fiber, B vitamins (if enriched)'
+    },
+    'tuna': {
+        'calories': '132 kcal per 100g (cooked)',
+        'benefits': 'Rich in high-quality protein and omega-3 fatty acids. Supports heart and brain health.',
+        'disadvantages': 'Can contain mercury; should be consumed in moderation, especially by pregnant women and young children.',
+        'nutrients': 'Protein, omega-3 fatty acids, selenium, vitamin D, B vitamins'
+    },
+    'ube': {
+        'calories': '140 kcal per 100g',
+        'benefits': 'Rich in antioxidants and fiber. Provides complex carbohydrates and essential vitamins.',
+        'disadvantages': 'Contains natural sugars; should be consumed in moderation by those monitoring sugar intake.',
+        'nutrients': 'Fiber, vitamin C, potassium, antioxidants'
+    },
+    'udder': {
+        'calories': 'Varies widely; depends on preparation and consumption',
+        'benefits': 'Can provide protein and fats. Contains some vitamins and minerals.',
+        'disadvantages': 'Not commonly consumed; nutritional value varies. Can be high in fats.',
+        'nutrients': 'Protein, fats, small amounts of vitamins and minerals'
+    },
+    'udi’s bread': {
+        'calories': '250 kcal per 100g',
+        'benefits': 'Gluten-free option for those with celiac disease or gluten sensitivity. Can provide carbohydrates and some fiber.',
+        'disadvantages': 'May be lower in fiber and nutrients compared to whole grain bread. Often contains added sugars or fats.',
+        'nutrients': 'Carbohydrates, small amounts of protein and fiber (varies by product)'
+    },
+    'udo': {
+        'calories': 'Varies widely; depends on preparation and consumption',
+        'benefits': 'May contain beneficial herbs and natural ingredients. Traditional dishes may offer a variety of nutrients.',
+        'disadvantages': 'Nutritional content varies widely; may contain high levels of fats or sugars depending on preparation.',
+        'nutrients': 'Varies by ingredients'
+    },
+    'udon noodles': {
+        'calories': '127 kcal per 100g (cooked)',
+        'benefits': 'Provides carbohydrates and energy. Can be a versatile base for various nutritious toppings and broths.',
+        'disadvantages': 'Often made from refined flour, which can be low in fiber. Nutritional value depends on additional ingredients and preparation.',
+        'nutrients': 'Carbohydrates, small amounts of protein, B vitamins (if enriched)'
+    },
+    'ugali': {
+        'calories': '110 kcal per 100g',
+        'benefits': 'Provides carbohydrates and energy. Staple food in many cultures, often served with nutrient-rich stews and vegetables.',
+        'disadvantages': 'Low in nutrients if consumed alone. Can contribute to high calorie intake if consumed in large quantities.',
+        'nutrients': 'Carbohydrates, small amounts of protein, fiber (if whole grain)'
+    },
+    'ugli fruit': {
+        'calories': '47 kcal per 100g',
+        'benefits': 'High in vitamin C and fiber. Supports immune health and digestion.',
+        'disadvantages': 'Contains natural sugars; should be consumed in moderation by those monitoring sugar intake.',
+        'nutrients': 'Vitamin C, fiber, potassium, antioxidants'
+    },
+    'ugliles biscuits': {
+        'calories': 'Varies widely; typically high in calories',
+        'benefits': 'Can be a source of enjoyment and occasional treat. Often contains carbohydrates and fats.',
+        'disadvantages': 'High in sugars, fats, and calories. Should be consumed in moderation.',
+        'nutrients': 'Carbohydrates, fats, sugars, small amounts of protein'
+    },
+    'ukrainian rolls': {
+        'calories': 'Varies widely; depends on preparation',
+        'benefits': 'Provides carbohydrates and energy. Can be a source of comfort food and cultural heritage.',
+        'disadvantages': 'Nutritional value can vary; may be high in fats and sugars depending on recipe.',
+        'nutrients': 'Carbohydrates, fats (varies), small amounts of protein and fiber'
+    },
+    'umbrella fruit': {
+        'calories': 'Varies widely; not commonly available',
+        'benefits': 'May contain vitamins and antioxidants, depending on the type of fruit.',
+        'disadvantages': 'Limited availability and nutritional information.',
+        'nutrients': 'Varies by type of fruit'
+    },
+    'umeboshi plums': {
+        'calories': '33 kcal per 100g',
+        'benefits': 'Rich in antioxidants and fiber. Contains beneficial probiotics if fermented.',
+        'disadvantages': 'Very high in sodium; should be consumed in moderation.',
+        'nutrients': 'Fiber, antioxidants, sodium, small amounts of vitamins and minerals'
+    },
+    'unagi': {
+        'calories': '184 kcal per 100g',
+        'benefits': 'Rich in high-quality protein and omega-3 fatty acids. Provides essential vitamins and minerals.',
+        'disadvantages': 'Can be high in fats, especially if prepared with rich sauces.',
+        'nutrients': 'Protein, omega-3 fatty acids, vitamins A and E, calcium'
+    },
+    'undio': {
+        'calories': 'Varies widely; not commonly available',
+        'benefits': 'May offer unique nutritional benefits depending on preparation and ingredients.',
+        'disadvantages': 'Limited availability and nutritional information.',
+        'nutrients': 'Varies by preparation'
+    },
+    'unleavened bread': {
+        'calories': '258 kcal per 100g',
+        'benefits': 'Provides carbohydrates and energy. Often used in cultural and religious contexts.',
+        'disadvantages': 'Can be low in fiber and other nutrients if made with refined flour.',
+        'nutrients': 'Carbohydrates, small amounts of protein and fiber (varies by ingredients)'
+    },
+    'unsweetened chocolates': {
+        'calories': '228 kcal per 100g',
+        'benefits': 'High in antioxidants and flavonoids. Can support heart health and improve mood.',
+        'disadvantages': 'High in fats and calories. Bitter taste can be unappealing to some.',
+        'nutrients': 'Fats (including saturated fats), iron, magnesium, antioxidants'
+    },
+    'upma': {
+        'calories': '129 kcal per 100g',
+        'benefits': 'Rich in carbohydrates and provides energy. Can be made with vegetables and spices for added nutrition.',
+        'disadvantages': 'Can be high in fats and sodium depending on preparation.',
+        'nutrients': 'Carbohydrates, small amounts of protein and fiber, B vitamins'
+    },
+    'urchins': {
+        'calories': '172 kcal per 100g',
+        'benefits': 'Rich in protein and healthy fats, particularly omega-3 fatty acids. Provides vitamins and minerals.',
+        'disadvantages': 'Can be an acquired taste. Availability and price can be a limitation.',
+        'nutrients': 'Protein, omega-3 fatty acids, vitamins A and E, zinc'
+    },
+    'u-udon noodles': {
+        'calories': '127 kcal per 100g (cooked)',
+        'benefits': 'Provides carbohydrates and energy. Can be a versatile base for various nutritious toppings and broths.',
+        'disadvantages': 'Often made from refined flour, which can be low in fiber. Nutritional value depends on additional ingredients and preparation.',
+        'nutrients': 'Carbohydrates, small amounts of protein, B vitamins (if enriched)'
+    },
+    'venison': {
+        'calories': '158 kcal per 100g (cooked)',
+        'benefits': 'Lean source of high-quality protein. Rich in iron, B vitamins, and zinc.',
+        'disadvantages': 'Can be tough and require specific cooking methods. Limited availability in some areas.',
+        'nutrients': 'Protein, iron, B vitamins, zinc'
+    },
+    'waffles': {
+        'calories': '291 kcal per 100g',
+        'benefits': 'Provides carbohydrates and energy. Can be fortified with vitamins and minerals.',
+        'disadvantages': 'Often high in sugars and fats, especially with added syrups and toppings.',
+        'nutrients': 'Carbohydrates, small amounts of protein, B vitamins (if enriched), iron'
+    },
+    'walnuts': {
+        'calories': '654 kcal per 100g',
+        'benefits': 'Rich in healthy fats, particularly omega-3 fatty acids. Provides protein, fiber, and various vitamins and minerals.',
+        'disadvantages': 'High in calories and fat; should be consumed in moderation due to calorie density.',
+        'nutrients': 'Healthy fats, protein, fiber, vitamin E, magnesium, zinc'
+    },
+    'wildcard day': {
+        'calories': 'Varies widely depending on foods chosen',
+        'benefits': 'Can offer a variety of nutrients and flavors. Allows for flexibility and exploration of different cuisines.',
+        'disadvantages': 'Nutritional value depends on food choices; can range from highly nutritious to high in fats, sugars, and calories.',
+        'nutrients': 'Varies widely by food choices'
+    },
+    'wine': {
+        'calories': '83 kcal per 100ml (varies by type)',
+        'benefits': 'Contains antioxidants, particularly resveratrol. Moderate consumption may support heart health.',
+        'disadvantages': 'High in calories from alcohol. Excessive consumption can lead to health issues including liver damage and increased cancer risk.',
+        'nutrients': 'Alcohol, antioxidants (including resveratrol), small amounts of vitamins and minerals'
+    },
+    'xacuti': {
+        'calories': 'Varies widely depending on ingredients',
+        'benefits': 'Traditional Goan dish that can be rich in protein and spices. Provides a flavorful and nutrient-rich meal.',
+        'disadvantages': 'Can be high in fats and sodium, depending on preparation. Nutritional value varies by recipe.',
+        'nutrients': 'Protein (if meat or poultry is used), fats, spices, vitamins and minerals (varies by ingredients)'
+    },
+    'xacuti masala': {
+        'calories': 'Varies widely depending on ingredients',
+        'benefits': 'Blend of spices that can add flavor and potential health benefits to dishes. Spices may have anti-inflammatory and antioxidant properties.',
+        'disadvantages': 'Can be high in sodium if commercially prepared. Nutritional value depends on spices used.',
+        'nutrients': 'Varies by spice blend'
+    },
+    'xalwa a somali': {
+        'calories': 'Varies widely depending on preparation',
+        'benefits': 'Traditional Somali dessert that can provide carbohydrates and energy. Often made with natural ingredients like dates and nuts.',
+        'disadvantages': 'Can be high in sugars and fats. Should be consumed in moderation.',
+        'nutrients': 'Carbohydrates, sugars, fats, small amounts of protein'
+    },
+    'xander': {
+        'calories': 'Varies widely depending on preparation',
+        'benefits': 'May refer to a fish known as zander or pike-perch, which is rich in protein and low in fat.',
+        'disadvantages': 'Availability can be limited in some regions. Nutritional value depends on preparation method.',
+        'nutrients': 'Protein, small amounts of fats, vitamins, and minerals'
+    },
+    'xanthan gum': {
+        'calories': '331 kcal per 100g',
+        'benefits': 'Common food additive used as a thickener and stabilizer. Gluten-free and can be used in a variety of recipes.',
+        'disadvantages': 'May cause digestive issues in large amounts. Typically consumed in very small quantities.',
+        'nutrients': 'Fiber'
+    },
+    'xanthareel': {
+        'calories': 'Varies widely depending on preparation',
+        'benefits': 'Potentially a type of seafood, likely rich in protein and healthy fats.',
+        'disadvantages': 'Limited information available. Availability and preparation methods can vary.',
+        'nutrients': 'Protein, fats, small amounts of vitamins and minerals'
+    },
+    'xanthones': {
+        'calories': 'Varies widely; refers to a class of polyphenolic compounds',
+        'benefits': 'Found in certain fruits like mangosteen. Known for their antioxidant properties and potential health benefits.',
+        'disadvantages': 'Limited specific information on caloric content as they are typically found in trace amounts in foods.',
+        'nutrients': 'Antioxidants'
+    },
+    'xanthren': {
+        'calories': 'Varies widely; limited information available',
+        'benefits': 'May refer to a specific food or ingredient with potential nutritional benefits.',
+        'disadvantages': 'Limited information available on nutritional content and benefits.',
+        'nutrients': 'Varies widely'
+    },
+    'xanthum gum': {
+        'calories': '331 kcal per 100g',
+        'benefits': 'Common food additive used as a thickener and stabilizer. Gluten-free and can be used in a variety of recipes.',
+        'disadvantages': 'May cause digestive issues in large amounts. Typically consumed in very small quantities.',
+        'nutrients': 'Fiber'
+    },
+    'xavier soup': {
+        'calories': 'Varies widely depending on ingredients',
+        'benefits': 'Traditional Italian soup often made with dumplings or gnocchi. Can provide a comforting, nutrient-rich meal.',
+        'disadvantages': 'Nutritional content varies widely; can be high in sodium and fats depending on preparation.',
+        'nutrients': 'Varies by ingredients; often includes protein, carbohydrates, fats, and vitamins'
+    },
+    'xavier souppe': {
+        'calories': 'Varies widely depending on ingredients',
+        'benefits': 'Similar to Xavier soup; can provide a comforting, nutrient-rich meal.',
+        'disadvantages': 'Nutritional content varies widely; can be high in sodium and fats depending on preparation.',
+        'nutrients': 'Varies by ingredients; often includes protein, carbohydrates, fats, and vitamins'
+    },
+    'xavier steak': {
+        'calories': 'Varies widely depending on cut and preparation',
+        'benefits': 'Rich in high-quality protein and iron. Often served with vegetables and sauces.',
+        'disadvantages': 'Can be high in saturated fats and cholesterol, especially if prepared with rich sauces.',
+        'nutrients': 'Protein, iron, B vitamins, fats'
+    },
+    'x-cat-ik chillies': {
+        'calories': '40 kcal per 100g',
+        'benefits': 'Rich in vitamins A and C, capsaicin. Supports immune function and may boost metabolism.',
+        'disadvantages': 'Can cause digestive discomfort or irritation for some people. Spiciness may not be suitable for everyone.',
+        'nutrients': 'Vitamin A, vitamin C, capsaicin, fiber'
+    },
+    'xerem de fiesta': {
+        'calories': 'Varies widely depending on ingredients',
+        'benefits': 'Traditional dish often made with cornmeal and various toppings. Can provide carbohydrates and energy.',
+        'disadvantages': 'Nutritional content varies; may be high in fats and sodium depending on preparation.',
+        'nutrients': 'Carbohydrates, small amounts of protein and fats (varies by ingredients)'
+    },
+    'x-factor': {
+        'calories': 'Varies widely; may refer to a variety of foods or drinks',
+        'benefits': 'Varies widely depending on the specific food or drink. Could potentially offer unique nutritional benefits.',
+        'disadvantages': 'Nutritional content and benefits vary widely.',
+        'nutrients': 'Varies widely'
+    },
+    'xi gua': {
+        'calories': '30 kcal per 100g',
+        'benefits': 'High in water content, making it hydrating. Rich in vitamins A and C, and contains antioxidants.',
+        'disadvantages': 'Contains natural sugars; should be consumed in moderation by those monitoring sugar intake.',
+        'nutrients': 'Vitamin A, vitamin C, lycopene, potassium'
+    },
+    'xi mi fen': {
+        'calories': 'Varies widely depending on ingredients',
+        'benefits': 'May refer to a specific type of food, possibly Chinese or Asian cuisine. Nutritional content varies widely.',
+        'disadvantages': 'Limited information available on nutritional content and benefits.',
+        'nutrients': 'Varies widely'
+    },
+    'xia': {
+        'calories': 'Varies widely depending on ingredients',
+        'benefits': 'May refer to a specific type of food, potentially seafood or shellfish. Could provide protein and other nutrients.',
+        'disadvantages': 'Limited information available on nutritional content and benefits.',
+        'nutrients': 'Varies widely'
+    },
+    'xia mi': {
+        'calories': '99 kcal per 100g',
+        'benefits': 'Dried shrimp, rich in protein and flavor. Often used in Asian cuisine to add umami.',
+        'disadvantages': 'Can be high in sodium. Limited availability outside certain regions.',
+        'nutrients': 'Protein, sodium, small amounts of vitamins and minerals'
+    },
+    'xian hamburger': {
+        'calories': 'Varies widely depending on ingredients',
+        'benefits': 'May refer to a specific style of hamburger, potentially rich in protein and essential nutrients.',
+        'disadvantages': 'Nutritional content varies widely; can be high in fats and sodium depending on preparation.',
+        'nutrients': 'Protein, fats, carbohydrates (varies by ingredients)'
+    },
+    'xiang cai': {
+        'calories': 'Varies widely depending on ingredients',
+        'benefits': 'May refer to a specific type of food, potentially Chinese cuisine. Could offer a variety of nutrients depending on ingredients.',
+        'disadvantages': 'Limited information available on nutritional content and benefits.',
+        'nutrients': 'Varies widely'
+    },
+    'xiangcaojing': {
+        'calories': 'Varies widely depending on ingredients',
+        'benefits': 'May refer to a specific type of food or ingredient, potentially used for flavoring.',
+        'disadvantages': 'Limited information available on nutritional content and benefits.',
+        'nutrients': 'Varies widely'
+    },
+    'xiangchang': {
+        'calories': 'Varies widely depending on ingredients',
+        'benefits': 'May refer to a type of sausage or similar food. Can provide protein and fats.',
+        'disadvantages': 'Can be high in sodium and fats, particularly saturated fats.',
+        'nutrients': 'Protein, fats, sodium (varies by ingredients)'
+    },
+    'xiangjiao': {
+        'calories': '89 kcal per 100g',
+        'benefits': 'Commonly refers to bananas. Rich in potassium, vitamin C, and dietary fiber.',
+        'disadvantages': 'Contains natural sugars; should be consumed in moderation by those monitoring sugar intake.',
+        'nutrients': 'Potassium, vitamin C, fiber, vitamin B6'
+    },
+    'xianrou': {
+        'calories': 'Varies widely depending on preparation',
+        'benefits': 'May refer to fresh meat, providing high-quality protein and essential nutrients.',
+        'disadvantages': 'Nutritional content varies; can be high in fats depending on the cut and preparation method.',
+        'nutrients': 'Protein, fats, vitamins, and minerals (varies by type of meat)'
+    },
+    'xiaodianxin': {
+        'calories': 'Varies widely depending on preparation',
+        'benefits': 'May refer to Chinese dim sum or similar small dishes, offering a variety of flavors and nutrients.',
+        'disadvantages': 'Nutritional content varies widely; can be high in sodium and fats depending on preparation.',
+        'nutrients': 'Varies by dish; typically includes protein, fats, carbohydrates'
+    },
+    'xiaonijurou': {
+        'calories': 'Varies widely depending on preparation',
+        'benefits': 'May refer to a specific dish or type of meat, potentially rich in protein and other nutrients.',
+        'disadvantages': 'Nutritional content varies; can be high in fats and sodium depending on preparation.',
+        'nutrients': 'Protein, fats, vitamins, and minerals (varies by ingredients)'
+    },
+    'xihongshi': {
+        'calories': '18 kcal per 100g',
+        'benefits': 'Refers to tomatoes, rich in vitamins C and A, and antioxidants like lycopene. Supports heart health and immune function.',
+        'disadvantages': 'Some individuals may be sensitive to tomatoes due to acidity.',
+        'nutrients': 'Vitamin C, vitamin A, lycopene, potassium, fiber'
+    },
+    'xinag jun': {
+        'calories': 'Varies widely depending on preparation',
+        'benefits': 'May refer to a specific dish or type of mushroom, potentially offering protein, fiber, and antioxidants.',
+        'disadvantages': 'Nutritional content varies; availability may be limited in some regions.',
+        'nutrients': 'Varies by type of mushroom; typically includes protein, fiber, vitamins, and minerals'
+    },
+    'xingzi': {
+        'calories': 'Varies widely depending on type',
+        'benefits': 'May refer to apricots, which are rich in vitamins A and C, and fiber. Supports eye health and digestion.',
+        'disadvantages': 'Contains natural sugars; should be consumed in moderation by those monitoring sugar intake.',
+        'nutrients': 'Vitamin A, vitamin C, fiber, potassium'
+    },
+    'xinomavro grapes': {
+        'calories': '69 kcal per 100g',
+        'benefits': 'Rich in antioxidants and vitamins. Often used in wine production, providing resveratrol.',
+        'disadvantages': 'Contains natural sugars; should be consumed in moderation by those monitoring sugar intake.',
+        'nutrients': 'Antioxidants, vitamin C, potassium'
+    },
+    'xiphios': {
+        'calories': 'Varies widely depending on preparation',
+        'benefits': 'May refer to a type of fish known as swordfish, rich in protein and omega-3 fatty acids.',
+        'disadvantages': 'Can contain mercury; should be consumed in moderation, especially by pregnant women and young children.',
+        'nutrients': 'Protein, omega-3 fatty acids, vitamin D, selenium'
+    },
+    'xo sauce': {
+        'calories': '160 kcal per 100g',
+        'benefits': 'Rich and flavorful sauce often used in Chinese cuisine. Adds depth and umami to dishes.',
+        'disadvantages': 'High in sodium and fats; should be used sparingly.',
+        'nutrients': 'Sodium, fats, small amounts of protein and vitamins (varies by ingredients)'
+    },
+    'xocomil': {
+        'calories': 'Varies widely depending on preparation',
+        'benefits': 'May refer to a specific dish or drink, potentially offering unique nutritional benefits.',
+        'disadvantages': 'Nutritional content varies widely.',
+        'nutrients': 'Varies widely'
+    },
+    'yams': {
+        'calories': '118 kcal per 100g',
+        'benefits': 'Rich in dietary fiber, vitamins C and B6, and potassium. Supports digestion and immune function.',
+        'disadvantages': 'Contains natural sugars; should be consumed in moderation by those monitoring sugar intake.',
+        'nutrients': 'Fiber, vitamin C, vitamin B6, potassium'
+    },
+    'yangmei': {
+        'calories': '30 kcal per 100g',
+        'benefits': 'Also known as Chinese bayberry, rich in vitamin C and antioxidants. Supports immune health and has anti-inflammatory properties.',
+        'disadvantages': 'Limited availability outside of certain regions.',
+        'nutrients': 'Vitamin C, antioxidants, fiber'
+    },
+    'yogurt': {
+        'calories': '61 kcal per 100g (plain, low-fat)',
+        'benefits': 'Rich in probiotics, protein, calcium, and vitamins. Supports digestive health and bone health.',
+        'disadvantages': 'Flavored varieties can be high in sugars. Some individuals may be lactose intolerant.',
+        'nutrients': 'Protein, calcium, probiotics, vitamins B2 and B12'
+    },
+    'yum cha': {
+        'calories': 'Varies widely depending on dishes chosen',
+        'benefits': 'Refers to a Chinese meal involving tea and dim sum. Offers a variety of flavors and nutrients.',
+        'disadvantages': 'Nutritional content varies widely; some dishes can be high in fats and sodium.',
+        'nutrients': 'Varies widely by dish'
+    },
+    'yucca root': {
+        'calories': '159 kcal per 100g',
+        'benefits': 'Rich in carbohydrates and fiber. Provides energy and supports digestion.',
+        'disadvantages': 'High in carbohydrates; should be consumed in moderation by those monitoring carbohydrate intake.',
+        'nutrients': 'Carbohydrates, fiber, vitamin C, potassium'
+    },
+    'zander': {
+        'calories': '84 kcal per 100g',
+        'benefits': 'Also known as pike-perch, rich in protein and low in fat. Provides essential nutrients like omega-3 fatty acids and vitamin D.',
+        'disadvantages': 'Limited availability in some regions.',
+        'nutrients': 'Protein, omega-3 fatty acids, vitamin D, selenium'
+    },
+    'zabaglione': {
+        'calories': '305 kcal per 100g',
+        'benefits': 'Italian dessert made from egg yolks, sugar, and wine. Can provide protein and fats.',
+        'disadvantages': 'High in sugars and fats; should be consumed in moderation.',
+        'nutrients': 'Protein, fats, sugars, small amounts of vitamins and minerals'
+    },
+    'zabaione': {
+        'calories': '305 kcal per 100g',
+        'benefits': 'Italian dessert made from egg yolks, sugar, and wine. Can provide protein and fats.',
+        'disadvantages': 'High in sugars and fats; should be consumed in moderation.',
+        'nutrients': 'Protein, fats, sugars, small amounts of vitamins and minerals'
+    },
+    'zacusca': {
+        'calories': '94 kcal per 100g',
+        'benefits': 'Romanian vegetable spread made from eggplants, peppers, and tomatoes. Rich in fiber and vitamins.',
+        'disadvantages': 'Can be high in sodium depending on preparation.',
+        'nutrients': 'Fiber, vitamins A and C, potassium'
+    },
+    'zaiquawao': {
+        'calories': 'Varies widely depending on preparation',
+        'benefits': 'May refer to a specific dish or type of food. Nutritional content varies widely.',
+        'disadvantages': 'Limited information available on nutritional content and benefits.',
+        'nutrients': 'Varies widely'
+    },
+    'zampone': {
+        'calories': '324 kcal per 100g',
+        'benefits': 'Italian dish made from stuffed pigs trotter. Rich in protein and flavor.',
+        'disadvantage':'High in fats and cholesterol should be consumed in moderation.',
+        'nutrients': 'Protein, fats, cholesterol, small amounts of vitamins and minerals'
+    },
+    'zarzuela': {
+        'calories': 'Varies widely depending on ingredients',
+        'benefits': 'Spanish seafood stew that can be rich in protein and omega-3 fatty acids. Often includes a variety of seafood and vegetables.',
+        'disadvantages': 'Nutritional content varies; can be high in sodium depending on preparation.',
+        'nutrients': 'Protein, omega-3 fatty acids, vitamins, and minerals (varies by ingredients)'
+    },
+    'zeera': {
+        'calories': '375 kcal per 100g',
+        'benefits': 'Also known as cumin seeds, rich in antioxidants and anti-inflammatory compounds. Supports digestion and overall health.',
+        'disadvantages': 'Used as a spice; typically consumed in small quantities.',
+        'nutrients': 'Antioxidants, iron, fiber, small amounts of vitamins'
+    },
+    'zeppole': {
+        'calories': '347 kcal per 100g',
+        'benefits': 'Italian pastry often enjoyed during celebrations. Provides carbohydrates and fats.',
+        'disadvantages': 'High in sugars and fats; should be consumed in moderation.',
+        'nutrients': 'Carbohydrates, fats, sugars'
+    },
+    'zeraim': {
+        'calories': 'Varies widely depending on ingredients',
+        'benefits': 'May refer to seeds, which are rich in healthy fats, protein, and fiber.',
+        'disadvantages': 'Caloric content varies widely; can be high in fats.',
+        'nutrients': 'Healthy fats, protein, fiber, vitamins, and minerals (varies by seed type)'
+    },
+    'zero-calorie sweeteners': {
+        'calories': '0 kcal per serving',
+        'benefits': 'Provides sweetness without calories. Can help reduce overall calorie intake.',
+        'disadvantages': 'Some types may have an aftertaste or potential side effects.',
+        'nutrients': 'None; provides no significant nutrients'
+    },
+    'zest': {
+        'calories': 'Varies widely; typically consumed in small quantities',
+        'benefits': 'Refers to the outer peel of citrus fruits. Rich in flavor and contains antioxidants and essential oils.',
+        'disadvantages': 'Can be bitter; typically used in small quantities as a flavor enhancer.',
+        'nutrients': 'Vitamin C, antioxidants'
+    },
+    'zhajiangmian': {
+        'calories': 'Varies widely depending on ingredients',
+        'benefits': 'Chinese noodle dish that can be rich in protein and carbohydrates. Often includes vegetables and savory sauce.',
+        'disadvantages': 'Can be high in sodium and fats depending on preparation.',
+        'nutrients': 'Protein, carbohydrates, fats, vitamins (varies by ingredients)'
+    },
+    'zhurou': {
+        'calories': 'Varies widely depending on preparation',
+        'benefits': 'May refer to pork, providing high-quality protein and essential nutrients.',
+        'disadvantages': 'Nutritional content varies; can be high in fats, particularly saturated fats, depending on the cut.',
+        'nutrients': 'Protein, fats, vitamins, and minerals (varies by cut)'
+    },
+    'zizania': {
+        'calories': '101 kcal per 100g',
+        'benefits': 'Also known as wild rice, rich in protein, fiber, and antioxidants. Supports digestion and heart health.',
+        'disadvantages': 'Can be more expensive than other types of rice. Longer cooking time.',
+        'nutrients': 'Protein, fiber, antioxidants, vitamins, and minerals'
+    },
+    'zoodles': {
+        'calories': '17 kcal per 100g',
+        'benefits': 'Low-calorie alternative to traditional pasta. Rich in vitamins A and C, and fiber.',
+        'disadvantages': 'Can have a different texture and taste compared to traditional pasta.',
+        'nutrients': 'Vitamin A, vitamin C, fiber, potassium'
+    },
+    'zoe soup': {
+        'calories': 'Varies widely depending on ingredients',
+        'benefits': 'May refer to a specific type of soup or stew, potentially rich in nutrients.',
+        'disadvantages': 'Nutritional content varies widely; can be high in sodium and fats depending on preparation.',
+        'nutrients': 'Varies by ingredients; typically includes protein, carbohydrates, fats, vitamins, and minerals'
+    },
+    'zrazy': {
+        'calories': 'Varies widely depending on ingredients',
+        'benefits': 'Traditional Eastern European dish that can be rich in protein and flavor.',
+        'disadvantages': 'Nutritional content varies widely; can be high in fats and sodium depending on preparation.',
+        'nutrients': 'Protein, fats, vitamins, and minerals (varies by ingredients)'
+    },
+    'zucchini': {
+        'calories': '17 kcal per 100g',
+        'benefits': 'Low in calories and rich in vitamins A and C, and potassium. Supports eye health and immune function.',
+        'disadvantages': 'Contains moderate amounts of oxalates; should be consumed in moderation by individuals prone to kidney stones.',
+        'nutrients': 'Vitamin A, vitamin C, potassium, fiber'
+    },
+    'muttonbiryani': {
+        'calories': '350-600 kcal per serving',
+        'benefits': 'Rich in protein and spices; flavorful and nutrient-dense.',
+        'disadvantages': 'Can be high in fats and sodium; calorie content can be high.',
+        'nutrients': 'Protein, carbohydrates, fats, vitamins, minerals (varies by ingredients)'
+    },
+    'mutton': {
+        'calories': '294 kcal per 100g (cooked, lean)',
+        'benefits': 'High in protein and essential nutrients such as iron and zinc.',
+        'disadvantages': 'Can be high in saturated fats and cholesterol.',
+        'nutrients': 'Protein, iron, zinc, B vitamins, fats'
+    },
+    'parotta': {
+        'calories': '200-250 kcal per piece',
+        'benefits': 'Soft and flaky bread; good source of carbohydrates.',
+        'disadvantages': 'Typically high in calories and fats; low in other nutrients.',
+        'nutrients': 'Carbohydrates, fats'
+    },
+    'chilliparotta': {
+        'calories': '300-400 kcal per piece',
+        'benefits': 'Spicy variant of parotta; adds flavor.',
+        'disadvantages': 'Can be high in calories and fats.',
+        'nutrients': 'Carbohydrates, fats, spices'
+    },
+    'setparotta': {
+        'calories': '250-350 kcal per piece',
+        'benefits': 'A type of layered parotta; can be filling.',
+        'disadvantages': 'High in calories and fats.',
+        'nutrients': 'Carbohydrates, fats'
+    },
+    'chickendosa': {
+        'calories': '200-300 kcal per serving',
+        'benefits': 'Combines chicken with dosa; provides protein and carbohydrates.',
+        'disadvantages': 'Can be high in fats depending on preparation.',
+        'nutrients': 'Protein, carbohydrates, fats'
+    },
+    'muttondosa': {
+        'calories': '250-350 kcal per serving',
+        'benefits': 'Combines mutton with dosa; provides protein and carbohydrates.',
+        'disadvantages': 'Can be high in fats and calories.',
+        'nutrients': 'Protein, carbohydrates, fats'
+    },
+    'frenchfries': {
+        'calories': '365 kcal per 100g',
+        'benefits': 'Popular and tasty; provides quick energy.',
+        'disadvantages': 'High in fats and sodium; often deep-fried.',
+        'nutrients': 'Carbohydrates, fats, small amounts of vitamins and minerals'
+    },
+    'smileys': {
+        'calories': '200-300 kcal per serving',
+        'benefits': 'Fun, kid-friendly food often made from potatoes.',
+        'disadvantages': 'Typically high in fats and calories; often deep-fried.',
+        'nutrients': 'Carbohydrates, fats, some vitamins'
+    },
+    'hamburger': {
+        'calories': '250-500 kcal per burger',
+        'benefits': 'Provides protein and can be customized with vegetables and sauces.',
+        'disadvantages': 'Can be high in fats, sodium, and calories.',
+        'nutrients': 'Protein, fats, carbohydrates, vitamins, minerals (varies by ingredients)'
+    },
+    'cheeseburger': {
+        'calories': '300-600 kcal per burger',
+        'benefits': 'Adds cheese to the hamburger, providing additional protein and calcium.',
+        'disadvantages': 'Higher in calories, fats, and sodium compared to a regular hamburger.',
+        'nutrients': 'Protein, calcium, fats, carbohydrates'
+    },
+    'sandwich': {
+        'calories': '200-500 kcal',
+        'benefits': 'Versatile; can include a variety of ingredients for different nutrients.',
+        'disadvantages': 'Nutritional content varies widely; can be high in calories and sodium.',
+        'nutrients': 'Varies widely depending on ingredients'
+    },
+    'milkshake': {
+        'calories': '300-600 kcal per serving',
+        'benefits': 'Rich and creamy; provides calcium and protein if made with dairy.',
+        'disadvantages': 'Can be high in sugars and fats.',
+        'nutrients': 'Protein, calcium, sugars, fats'
+    },
+    'muffin': {
+        'calories': '200-400 kcal per muffin',
+        'benefits': 'Portable and often includes fruits or nuts.',
+        'disadvantages': 'Can be high in sugars and fats.',
+        'nutrients': 'Carbohydrates, sugars, fats, some vitamins and minerals'
+    },
+    'burrito': {
+        'calories': '300-600 kcal per burrito',
+        'benefits': 'Provides a balanced meal with protein, carbohydrates, and vegetables.',
+        'disadvantages': 'Can be high in calories, fats, and sodium.',
+        'nutrients': 'Protein, carbohydrates, fats, vitamins, minerals (varies by ingredients)'
+    },
+    'taco': {
+        'calories': '150-300 kcal per taco',
+        'benefits': 'Can be filled with a variety of ingredients; provides protein and vegetables.',
+        'disadvantages': 'Can be high in sodium and fats depending on fillings and toppings.',
+        'nutrients': 'Protein, carbohydrates, fats, vitamins, minerals'
+    },
+    'hotdog': {
+        'calories': '150-250 kcal per hot dog',
+        'benefits': 'Easy to prepare and eat; provides protein.',
+        'disadvantages': 'Can be high in sodium, fats, and preservatives.',
+        'nutrients': 'Protein, fats, sodium'
+    },
+    'friedchicken': {
+        'calories': '250-400 kcal per piece',
+        'benefits': 'Rich in protein and flavor.',
+        'disadvantages': 'Typically high in fats and calories, especially if deep-fried.',
+        'nutrients': 'Protein, fats, some vitamins and minerals'
+    },
+    'donuts': {
+        'calories': '250-400 kcal per donut',
+        'benefits': 'Sweet treat; can provide quick energy.',
+        'disadvantages': 'High in sugars and fats; often deep-fried.',
+        'nutrients': 'Carbohydrates, fats, sugars'
+    },
+    'softdrink': {
+        'calories': '150 kcal per 12 oz (355 ml)',
+        'benefits': 'Provides hydration and flavor.',
+        'disadvantages': 'High in sugars and empty calories; may contribute to weight gain and dental issues.',
+        'nutrients': 'None; provides no significant nutrients'
+    },
+    'pizza': {
+        'calories': '200-300 kcal per slice',
+        'benefits': 'Can provide a balanced meal with carbohydrates, protein, and fats.',
+        'disadvantages': 'Can be high in calories, fats, and sodium, especially with extra cheese and meats.',
+        'nutrients': 'Protein, carbohydrates, fats, vitamins, minerals (varies by toppings)'
+    },
+    'onionrings': {
+        'calories': '300-400 kcal per serving',
+        'benefits': 'Flavorful and crunchy; made from onions, which provide some nutrients.',
+        'disadvantages': 'Typically high in calories and fats; often deep-fried.',
+        'nutrients': 'Carbohydrates, fats, some vitamins'
+    },
+    'pancake': {
+        'calories': '200-300 kcal per pancake',
+        'benefits': 'Can be a good source of carbohydrates and can be topped with fruits or syrups.',
+        'disadvantages': 'Often high in sugars and fats, especially with toppings.',
+        'nutrients': 'Carbohydrates, fats, some proteins'
+    },
+    'bacon': {
+        'calories': '42 kcal per slice',
+        'benefits': 'Provides protein and flavor.',
+        'disadvantages': 'High in saturated fats and sodium; should be consumed in moderation.',
+        'nutrients': 'Protein, fats, sodium'
+    },
+    'chip': {
+        'calories': '150-200 kcal per serving',
+        'benefits': 'Crispy and convenient snack.',
+        'disadvantages': 'Often high in fats, sodium, and calories.',
+        'nutrients': 'Carbohydrates, fats, sodium'
+    },
+    'noodle': {
+        'calories': '200-400 kcal per serving',
+        'benefits': 'Provides carbohydrates and can be part of a balanced meal.',
+        'disadvantages': 'Can be high in calories and sodium, especially in prepared forms.',
+        'nutrients': 'Carbohydrates, small amounts of protein and fats (varies by type)'
+    }
+            
+
+            };
+
+            // Display the food details if found
+            if (input in foods) {
+                details.innerHTML = `<h2>${input.charAt(0).toUpperCase() + input.slice(1)}</h2>
+                    <p><strong>Calories:</strong> ${foods[input].calories}</p>
+                    <p><strong>Benefits:</strong> ${foods[input].benefits}</p>
+                    <p><strong>Disadvantages:</strong> ${foods[input].disadvantages}</p>
+                    <p><strong>nutrients:</strong> ${foods[input].nutrients}</p>`;
+
+            } else {
+                details.innerHTML = '<p>No details available for this food.</p>';
+            }
+        }
+    </script>
+</body>
+</html>
